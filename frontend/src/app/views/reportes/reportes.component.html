@@ -1,0 +1,88 @@
+<div class="page-header">
+  <h1>Reportes - Estado de Cuenta</h1>
+</div>
+
+<div class="card" style="padding:20px 24px;margin-bottom:20px">
+  <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+    <div class="form-group" style="margin-bottom:0">
+      <label>Fecha Inicio</label>
+      <input type="date" [(ngModel)]="fechaInicio">
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label>Fecha Fin</label>
+      <input type="date" [(ngModel)]="fechaFin">
+    </div>
+    @if (isAdmin()) {
+      <div class="form-group" style="margin-bottom:0">
+        <label>Cliente</label>
+        <select [(ngModel)]="clienteId">
+          <option value="">Todos</option>
+          @for (c of clientes(); track c.customerId) {
+            <option [value]="c.customerId">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    <button class="btn btn-primary" (click)="buscar()" [disabled]="loading()">Buscar</button>
+    @if (reporte().length > 0) {
+      <button class="btn btn-secondary" (click)="descargarPdf()">Descargar PDF</button>
+    }
+  </div>
+</div>
+
+@if (reporte().length > 0) {
+  <div style="display:flex;gap:16px;margin-bottom:20px">
+    <div class="card" style="flex:1;text-align:center;padding:20px">
+      <div style="font-size:11px;color:#5c6370;text-transform:uppercase;letter-spacing:.8px;font-weight:600">Total Créditos</div>
+      <div style="font-size:22px;font-weight:800;color:#2e7d32;margin-top:6px">{{ totalCreditos | currency:'USD' }}</div>
+    </div>
+    <div class="card" style="flex:1;text-align:center;padding:20px">
+      <div style="font-size:11px;color:#5c6370;text-transform:uppercase;letter-spacing:.8px;font-weight:600">Total Débitos</div>
+      <div style="font-size:22px;font-weight:800;color:#c62828;margin-top:6px">{{ totalDebitos | currency:'USD' }}</div>
+    </div>
+    <div class="card" style="flex:1;text-align:center;padding:20px">
+      <div style="font-size:11px;color:#5c6370;text-transform:uppercase;letter-spacing:.8px;font-weight:600">Movimientos</div>
+      <div style="font-size:22px;font-weight:800;color:#1a3067;margin-top:6px">{{ reporte().length }}</div>
+    </div>
+  </div>
+}
+
+<div class="card" style="padding:0">
+  @if (loading()) {
+    <div class="empty-state">Cargando reporte...</div>
+  } @else if (reporte().length === 0) {
+    <div class="empty-state">Seleccione los filtros y presione Buscar</div>
+  } @else {
+    <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Cuenta</th>
+          <th>Tipo</th>
+          <th>Saldo Inicial</th>
+          <th>Movimiento</th>
+          <th>Saldo Disponible</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of reporte(); track $index) {
+          <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.customer }}</td>
+            <td>{{ r.accountNumber }}</td>
+            <td>{{ r.accountType }}</td>
+            <td>{{ r.initialBalance | currency:'USD' }}</td>
+            <td [style.color]="r.movement >= 0 ? '#2e7d32' : '#d32f2f'">{{ r.movement | currency:'USD' }}</td>
+            <td>{{ r.availableBalance | currency:'USD' }}</td>
+            <td><span class="badge" [class.active]="r.active" [class.inactive]="!r.active">{{ r.active ? 'Activa' : 'Inactiva' }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    </div>
+  }
+</div>
+

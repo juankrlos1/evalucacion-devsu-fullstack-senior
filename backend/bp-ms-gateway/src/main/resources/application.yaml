@@ -1,0 +1,78 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: bp-ms-gateway
+
+  cloud:
+    gateway:
+      default-filters:
+        - name: RequestSize
+          args:
+            maxSize: 1MB
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+
+      routes:
+        - id: auth-service
+          uri: http://bp-ms-customer:8081
+          predicates:
+            - Path=/api/auth/**
+
+        - id: customer-service
+          uri: http://bp-ms-customer:8081
+          predicates:
+            - Path=/api/clientes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: customerService
+                fallbackUri: forward:/fallback/unavailable
+
+        - id: account-service
+          uri: http://bp-ms-account:8082
+          predicates:
+            - Path=/api/cuentas/**,/api/movimientos/**,/api/reportes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: accountService
+                fallbackUri: forward:/fallback/unavailable
+
+gateway:
+  rate-limit:
+    requests-per-window: 100
+    window-seconds: 60
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:BankingMicroservicesSecretKey2026DevsuJWTSign!}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+
+logging:
+  level:
+    com.banking.gateway: INFO
+    org.springframework.cloud.gateway: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

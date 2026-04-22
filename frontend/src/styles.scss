@@ -1,0 +1,124 @@
+@use 'assets/scss/variables' as *;
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: $font;
+  color: $text;
+  background: $bg;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: $primary; text-decoration: none; &:hover { color: $primary-light; } }
+button { cursor: pointer; font-family: inherit; }
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
+  border: 1.5px solid $border;
+  border-radius: $radius;
+  padding: 10px 14px;
+  outline: none;
+  background: $white;
+  color: $text;
+  transition: border-color $transition, box-shadow $transition;
+  &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba($primary, .1); }
+  &::placeholder { color: #a0a4b0; }
+  &:disabled { background: $bg; color: $text-secondary; cursor: not-allowed; }
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235c6370' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+table { width: 100%; border-collapse: collapse; }
+thead { background: #f8f9fb; }
+th {
+  text-align: left; padding: 12px 16px; font-weight: 600;
+  color: $text-secondary; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .8px; border-bottom: 2px solid $border;
+}
+td { padding: 14px 16px; border-bottom: 1px solid $border-light; font-size: 13px; }
+tbody tr { transition: background $transition; &:hover { background: rgba($primary, .02); } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 24px; border: none; border-radius: $radius;
+  font-weight: 600; font-size: 13px; letter-spacing: .3px;
+  transition: all $transition;
+
+  &-primary {
+    background: $accent; color: $primary-dark;
+    &:hover { background: $accent-hover; transform: translateY(-1px); box-shadow: 0 4px 12px rgba($accent, .4); }
+    &:active { transform: translateY(0); }
+  }
+  &-secondary {
+    background: $white; color: $text; border: 1.5px solid $border;
+    &:hover { background: $bg; border-color: #c0c4cc; }
+  }
+  &-danger {
+    background: $white; color: $danger; border: 1.5px solid rgba($danger, .3);
+    &:hover { background: rgba($danger, .05); border-color: $danger; }
+  }
+  &-sm { padding: 6px 14px; font-size: 12px; }
+  &:disabled { opacity: .45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;
+  label { font-weight: 600; font-size: 12px; color: $text-secondary; text-transform: uppercase; letter-spacing: .5px; }
+  .error-msg { color: $danger; font-size: 11px; }
+}
+
+.card {
+  background: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-light;
+}
+
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+  h1 { font-size: 24px; font-weight: 700; color: $primary; }
+}
+
+.search-bar input {
+  width: 320px;
+  background: $white;
+  border: 1.5px solid $border;
+  &:focus { border-color: $primary; }
+}
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba($primary-dark, .5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; backdrop-filter: blur(4px);
+}
+.modal {
+  background: $white; border-radius: $radius-lg; padding: 32px;
+  width: 520px; max-width: 92vw; max-height: 88vh; overflow-y: auto;
+  box-shadow: $shadow-lg;
+  h2 { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: $primary; }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; padding-top: 20px; border-top: 1px solid $border-light; }
+}
+
+.badge {
+  display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .3px;
+  &.active { background: $success-light; color: $success; }
+  &.inactive { background: rgba($danger, .08); color: $danger; }
+  &.credit { background: $success-light; color: $success; }
+  &.debit { background: rgba($danger, .08); color: $danger; }
+}
+
+.actions { display: flex; gap: 8px; }
+.empty-state { text-align: center; padding: 48px 24px; color: $text-secondary; font-size: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.table-wrapper { padding: 0; overflow-x: auto; }

@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_schema: PUBLIC
+    open-in-view: false
+
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+app:
+  messaging:
+    customer-events:
+      exchange: test.customer.events
+      queue: test.account.customer.events
+      routing-key: test.customer.events
+
+  business:
+    daily-withdrawal-limit: 99999

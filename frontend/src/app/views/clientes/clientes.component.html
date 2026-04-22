@@ -1,0 +1,112 @@
+<div class="page-header">
+  <h1>Clientes</h1>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="search-bar">
+      <input placeholder="Buscar por nombre, ID o identificación..." [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">Nuevo</button>
+  </div>
+</div>
+
+<div class="card" style="padding:0">
+  @if (loading()) {
+    <div class="empty-state">Cargando...</div>
+  } @else if (filtered().length === 0) {
+    <div class="empty-state">No se encontraron clientes</div>
+  } @else {
+    <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Identificación</th>
+          <th>Género</th>
+          <th>Edad</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of filtered(); track c.customerId) {
+          <tr>
+            <td>{{ c.customerId }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.identification }}</td>
+            <td>{{ c.gender }}</td>
+            <td>{{ c.age }}</td>
+            <td>{{ c.phone }}</td>
+            <td><span class="badge" [class.active]="c.active" [class.inactive]="!c.active">{{ c.active ? 'Activo' : 'Inactivo' }}</span></td>
+            <td class="actions">
+              <button class="btn btn-secondary btn-sm" (click)="toggleActive(c)">{{ c.active ? 'Desactivar' : 'Activar' }}</button>
+              <button class="btn btn-secondary btn-sm" (click)="openEdit(c)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="confirmDelete(c)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    </div>
+  }
+</div>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="showModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ editing() ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input [(ngModel)]="form.name" required>
+        </div>
+        <div class="form-group">
+          <label>Identificación</label>
+          <input [(ngModel)]="form.identification" required [disabled]="editing()">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Género</label>
+          <select [(ngModel)]="form.gender">
+            <option value="Male">Masculino</option>
+            <option value="Female">Femenino</option>
+            <option value="Other">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Edad</label>
+          <input type="number" [(ngModel)]="form.age" min="1" max="120">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Dirección</label>
+        <input [(ngModel)]="form.address">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input [(ngModel)]="form.phone">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" [(ngModel)]="form.password">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="showModal.set(false)">Cancelar</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="!form.name || !form.identification">Guardar</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (deleteTarget()) {
+  <app-confirm-dialog
+    title="Eliminar Cliente"
+    [message]="'¿Eliminar a ' + deleteTarget()!.name + '?'"
+    (onConfirm)="doDelete()"
+    (onCancel)="deleteTarget.set(null)"
+  />
+}
+

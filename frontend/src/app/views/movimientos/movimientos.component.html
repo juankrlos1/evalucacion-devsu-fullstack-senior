@@ -1,0 +1,90 @@
+<div class="page-header">
+  <h1>Movimientos</h1>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="search-bar">
+      <input placeholder="Buscar por cuenta o tipo..." [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">Nuevo</button>
+  </div>
+</div>
+
+<div class="card" style="padding:0">
+  @if (loading()) {
+    <div class="empty-state">Cargando...</div>
+  } @else if (filtered().length === 0) {
+    <div class="empty-state">No se encontraron movimientos</div>
+  } @else {
+    <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cuenta</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Saldo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of filtered(); track m.movementId) {
+          <tr>
+            <td>{{ m.date | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ m.accountNumber }}</td>
+            <td><span class="badge" [class.credit]="m.value >= 0" [class.debit]="m.value < 0">{{ m.movementType }}</span></td>
+            <td [style.color]="m.value >= 0 ? '#2e7d32' : '#c62828'">{{ m.value | currency:'USD' }}</td>
+            <td>{{ m.balance | currency:'USD' }}</td>
+            <td class="actions">
+              <button class="btn btn-danger btn-sm" (click)="confirmDelete(m)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    </div>
+  }
+</div>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="showModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>Nuevo Movimiento</h2>
+      <div class="form-group">
+        <label>Cuenta</label>
+        <select [(ngModel)]="form.accountNumber">
+          <option value="">Seleccione una cuenta</option>
+          @for (c of cuentas(); track c.accountNumber) {
+            <option [value]="c.accountNumber">{{ c.accountNumber }} - {{ c.customerName }} ({{ c.accountType }})</option>
+          }
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select [(ngModel)]="form.movementType">
+            <option value="Deposit">Depósito</option>
+            <option value="Withdrawal">Retiro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Valor</label>
+          <input type="number" [(ngModel)]="form.value" min="0.01" step="0.01">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="showModal.set(false)">Cancelar</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="!form.accountNumber || form.value <= 0">Registrar</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (deleteTarget()) {
+  <app-confirm-dialog
+    title="Eliminar Movimiento"
+    message="¿Eliminar este movimiento?"
+    (onConfirm)="doDelete()"
+    (onCancel)="deleteTarget.set(null)"
+  />
+}
+

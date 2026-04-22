@@ -1,0 +1,53 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: bp-ms-account
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bp_banking_db?currentSchema=account_service
+    username: banking
+    password: banking
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: account_service
+    open-in-view: false
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+
+app:
+  messaging:
+    customer-events:
+      exchange: ${CUSTOMER_EVENTS_EXCHANGE:customer.events}
+      queue: ${CUSTOMER_EVENTS_QUEUE:account.customer.events}
+      routing-key: ${CUSTOMER_EVENTS_ROUTING_KEY:customer.events}
+
+  business:
+    daily-withdrawal-limit: ${DAILY_WITHDRAWAL_LIMIT:1000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.banking.account: INFO
+    com.banking.account.application: DEBUG
+    org.springframework.amqp: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

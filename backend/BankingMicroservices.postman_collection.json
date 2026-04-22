@@ -1,0 +1,624 @@
+{
+  "info": {
+    "_postman_id": "b1c2d3e4-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+    "name": "Banking Microservices API",
+    "description": "Postman collection for validating customer, account, movement, report, and business rule flows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Jose Lema",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or already exists', function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jose Lema\",\n  \"gender\": \"Male\",\n  \"age\": 32,\n  \"identification\": \"0102030405\",\n  \"address\": \"Otavalo sn y principal\",\n  \"phone\": \"098254785\",\n  \"password\": \"1234\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Create Marianela Montalvo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or already exists', function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Marianela Montalvo\",\n  \"gender\": \"Female\",\n  \"age\": 30,\n  \"identification\": \"0102030406\",\n  \"address\": \"Amazonas y NNUU\",\n  \"phone\": \"097548965\",\n  \"password\": \"5678\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Create Juan Osorio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or already exists', function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Osorio\",\n  \"gender\": \"Male\",\n  \"age\": 28,\n  \"identification\": \"0102030407\",\n  \"address\": \"13 junio y Equinoccial\",\n  \"phone\": \"098874587\",\n  \"password\": \"1245\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "List All Customers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('has data array', function () {",
+                  "  var json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer CLI-001",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('correct customer', function () {",
+                  "  pm.expect(pm.response.json().data.customerId).to.eql('CLI-001');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes/CLI-001",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes", "CLI-001"]
+            }
+          }
+        },
+        {
+          "name": "Patch Customer CLI-001",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Amazonas y NNUU updated\",\n  \"phone\": \"099999999\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes/CLI-001",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes", "CLI-001"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer CLI-003",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/clientes/CLI-003",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "clientes", "CLI-003"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Create Account Savings CLI-001",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or already exists', function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"Savings\",\n  \"initialBalance\": 2000,\n  \"active\": true,\n  \"customerId\": \"CLI-001\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Create Account Checking CLI-002",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or already exists', function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"Checking\",\n  \"initialBalance\": 100,\n  \"active\": true,\n  \"customerId\": \"CLI-002\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Create Account Savings CLI-003",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"Savings\",\n  \"initialBalance\": 0,\n  \"active\": true,\n  \"customerId\": \"CLI-003\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Create Account Savings2 CLI-002",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"Savings\",\n  \"initialBalance\": 540,\n  \"active\": true,\n  \"customerId\": \"CLI-002\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Create Account Checking CLI-001",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"Checking\",\n  \"initialBalance\": 1000,\n  \"active\": true,\n  \"customerId\": \"CLI-001\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "List All Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Get Account 478758",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('correct account', function () {",
+                  "  pm.expect(pm.response.json().data.accountNumber).to.eql('478758');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/cuentas/478758",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "cuentas", "478758"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movements",
+      "item": [
+        {
+          "name": "Withdrawal 478758 (-575)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created', function () { pm.response.to.have.status(201); });",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('movementId', json.data.movementId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"478758\",\n  \"value\": -575\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Deposit 225487 (+600)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"225487\",\n  \"value\": 600\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Deposit 495878 (+150)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"495878\",\n  \"value\": 150\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Withdrawal 496825 (-540)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"496825\",\n  \"value\": -540\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        },
+        {
+          "name": "List All Movements",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Get Movement by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos/{{movementId}}",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos", "{{movementId}}"]
+            }
+          }
+        },
+        {
+          "name": "Insufficient Balance (Saldo no disponible)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('message is Saldo no disponible', function () {",
+                  "  pm.expect(pm.response.json().message).to.eql('Saldo no disponible');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"478758\",\n  \"value\": -999999\n}"
+            },
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/movimientos",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "movimientos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Statement Marianela (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('has data array', function () {",
+                  "  pm.expect(pm.response.json().data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/reportes?fechaInicio=2022-02-01&fechaFin=2022-02-28&cliente=CLI-002",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "reportes"],
+              "query": [
+                { "key": "fechaInicio", "value": "2022-02-01" },
+                { "key": "fechaFin", "value": "2022-02-28" },
+                { "key": "cliente", "value": "CLI-002" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Statement Jose (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/reportes?fechaInicio=2022-02-01&fechaFin=2022-02-28&cliente=CLI-001",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "reportes"],
+              "query": [
+                { "key": "fechaInicio", "value": "2022-02-01" },
+                { "key": "fechaFin", "value": "2022-02-28" },
+                { "key": "cliente", "value": "CLI-001" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Statement Marianela (PDF base64)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('has pdf field', function () {",
+                  "  pm.expect(pm.response.json().data.pdf).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayBaseUrl}}/api/reportes?fechaInicio=2022-02-01&fechaFin=2022-02-28&cliente=CLI-002&format=pdf",
+              "host": ["{{gatewayBaseUrl}}"],
+              "path": ["api", "reportes"],
+              "query": [
+                { "key": "fechaInicio", "value": "2022-02-01" },
+                { "key": "fechaFin", "value": "2022-02-28" },
+                { "key": "cliente", "value": "CLI-002" },
+                { "key": "format", "value": "pdf" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "gatewayBaseUrl", "value": "http://localhost:8080" },
+    { "key": "movementId", "value": "" }
+  ]
+}
